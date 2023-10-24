@@ -35,3 +35,7 @@ clojure -M -m birthdays.birthdays
 ### Remotely
 
 This program runs at 07:00 UTC daily in a GitHub Actions workflow from the commandline, scheduled by cron.
+
+## License
+
+Distributed under an [MIT License](./LICENSE).
