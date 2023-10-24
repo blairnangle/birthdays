@@ -1,0 +1,20 @@
+name: Execute
+
+on:
+  schedule:
+    - cron: "0 7 * * *" # Runs on UTC
+
+env:
+  SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+  GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+
+jobs:
+  build:
+    name: Execute
+    runs-on: ubuntu-latest
+    container: clojure
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Execute
+        run: clojure -M -m birthdays.birthdays

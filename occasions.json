@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Igor",
+    "emails": [
+      "igor@mail.com"
+    ],
+    "date": "1970-01-01",
+    "occasion": "birthday"
+  },
+  {
+    "name": "Harriet & Inma",
+    "emails": [
+      "harriet@mail.com",
+      "inma@mail.com"
+    ],
+    "date": "2023-10-24",
+    "occasion": "anniversary"
+  }
+]
