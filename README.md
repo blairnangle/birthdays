@@ -16,9 +16,38 @@ repository [must also be public](https://docs.github.com/en/pull-requests/collab
 *However,* it's probably not a good idea to expose your friends' personal details, so one fairly simple way of making
 use of this project in a private repo (while maintaining the ability to periodically integrate upstream changes)
 is to create a private fork—see [this Stack Overflow answer](https://stackoverflow.com/a/30352360/4304123) for a
-step-by-step guide.
+step-by-step guide (unfortunately, this means that syncing your repo with upstream changes via GitHub's UI isn't
+possible).
 
-(Unfortunately, this means that syncing your repo with upstream changes via GitHub's UI isn't possible.)
+### Example
+
+#### Duplicate the code
+
+```shell
+git clone --bare https://github.com/blairnangle/birthdays.git
+cd birthdays.git
+git push --mirror https://github.com/yourname/birthdays-private.git
+cd ..
+rm -rf birthdays.git
+```
+
+#### Get the cloned project on your local machine
+
+```shell
+git clone https://github.com/yourname/birthdays-private.git
+cd birthdays-private
+[make some changes]
+git commit
+git push origin main
+```
+
+#### Sync with upstream (public) changes by creating a new remote
+
+```shell
+git remote add public https://github.com/blairnangle/birthdays.git
+git pull public main
+git push origin main
+```
 
 ## Configuration
 
