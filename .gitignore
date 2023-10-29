@@ -1,5 +1,5 @@
 .idea
-birthdays.iml
+*.iml
 .cpcache
 .nrepl-port
 .clj-kondo
