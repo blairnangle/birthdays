@@ -9,19 +9,15 @@
 
 (def n-sent (atom 0))
 
-(defn- subject
-  [occasion]
+(defn- greeting
+  [occasion name]
   (cond
-    (= occasion :birthday) "Happy birthday!"
-    (= occasion :wedding-anniversary) "Happy anniversary!"))
+    (= occasion :birthday) (str "Happy birthday, " name "!")
+    (= occasion :anniversary) (str "Happy anniversary, " name "!")))
 
 (defn- body
   [occasion name]
-  (let [greeting (cond
-                   (= occasion :birthday) (str "Happy birthday, " name "!")
-                   (= occasion :anniversary) (str "Happy anniversary, " name "!"))]
-
-    (str greeting "\n\n" (config/get-config :footer))))
+  (str (greeting occasion name) "\n\n" (config/get-config :footer)))
 
 (defn- send!
   [{:keys [emails name occasion]}]
@@ -37,7 +33,7 @@
         {:from    sender-email
          :to      emails
          :cc      (if (config/get-config :cc-sender) sender-email nil)
-         :subject (subject (keyword occasion))
+         :subject (greeting (keyword occasion) name)
          :body    (body (keyword occasion) name)})
       (swap! n-sent inc)
       (catch Exception e (str "Email to " (string/join ", " emails) " was not sent due to exception " (.getMessage e))
