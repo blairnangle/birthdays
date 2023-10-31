@@ -5,7 +5,8 @@
             [clj-time.core :as time]
             [clojure.walk :as walk]
             [clojure.tools.logging :as logging]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [hiccup2.core :as hiccup]))
 
 (def n-sent (atom 0))
 
@@ -16,13 +17,18 @@
     (= occasion :anniversary) (str "Happy anniversary, " name "!")))
 
 (defn- body
-  [occasion name]
-  (str (greeting occasion name) "\n\n" (config/get-config :footer)))
+  [greeting]
+  (str
+    (hiccup/html
+      [:div {:class "email"}
+       [:p greeting]])
+    (config/get-config :footer)))
 
 (defn- send!
   [{:keys [emails name occasion]}]
   (let [sender-email (config/get-config :sender-email)
-        gmail-password (config/get-config :gmail-password)]
+        gmail-password (config/get-config :gmail-password)
+        greeting (greeting (keyword occasion) name)]
     (try
       (postal/send-message
         {:host "smtp.gmail.com"
@@ -32,19 +38,22 @@
          :tls  true}
         {:from    sender-email
          :to      emails
-         :cc      (if (config/get-config :cc-sender) sender-email nil)
-         :subject (greeting (keyword occasion) name)
-         :body    (body (keyword occasion) name)})
+         :cc      (when (config/get-config :cc-sender) sender-email)
+         :subject greeting
+         :body    [{:type    "text/html; charset=utf-8"
+                    :content (body greeting)}]
+         })
       (swap! n-sent inc)
       (catch Exception e (str "Email to " (string/join ", " emails) " was not sent due to exception " (.getMessage e))
                          (logging/error (str e))))))
 
 (defn- happening-today
   [occasions]
-  (filter #(= (subs (get % "date") 5 10) (subs (str (time/today)) 5 10)) occasions))
+  (let [today (subs (str (time/today)) 5 10)]
+    (filter #(= (subs (get % "date") 5 10) today) occasions)))
 
 (defn -main
-  [& args]
+  [& _args]
   (config/load-config)
   (let [occasions (json/read-str (slurp (config/get-config :input-file)))
         today (happening-today occasions)]

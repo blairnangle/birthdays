@@ -1,7 +1,9 @@
 (ns birthdays.config
-  (:require [omniconf.core :as omni]))
+  (:require [omniconf.core :as omni]
+            [hiccup2.core :as hiccup]))
 
 (defn load-config []
+  (omni/enable-functions-as-defaults)
   (omni/define
     {:sender-email   {:description "The (Gmail) email address from which emails are sent."
                       :type        :string
@@ -16,7 +18,11 @@
      :footer         {:description "Comes at the end of each email."
                       :type        :string
                       :required    false
-                      :default     "This is an automated message. There is no option to unsubscribe."}
+                      :default     #(str (hiccup/html
+                                           [:p
+                                            "This is an automated message. There is no option to unsubscribe. You can view the code that powered this message "
+                                            [:a {:href "https://github.com/blairnangle/birthdays"} "here"]
+                                            "."]))}
      :input-file     {:description "Database of occasions to read."
                       :type        :string
                       :required    false
