@@ -58,16 +58,26 @@ below.
 Secret values should find there way into the code as GitHub Actions secrets -> environment variables -> read into config
 by Omniconf.
 
-### Sender email
+### :sender-email
 
 Save this as a GitHub Actions secret named `SENDER_EMAIL`.
 
-### Google App Password
+### :password
+
+#### Gmail
 
 You need a Google App Password to send emails on behalf of your Gmail account. This can be
 done [here](https://myaccount.google.com/apppasswords).
 
 Save this as a GitHub Actions secret named `GMAIL_PASSWORD`.
+
+#### Zoho
+
+If you have multifactor authentication (MFA) enabled for your Zoho Mail account, you will need to create an
+_Application-Specific Password_ -
+see [their docs](https://www.zoho.com/mail/help/adminconsole/two-factor-authentication.html#alink7). Even if you don't
+have MFA enabled, it is still a good idea to create one of these. Otherwise, a bad actor that gets their hands on your
+password will have access to everything in your account.
 
 ## Execution
 

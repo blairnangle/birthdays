@@ -3,3 +3,6 @@
 .cpcache
 .nrepl-port
 .clj-kondo
+
+# Git commit message prefix - to configure: git config commit.template .gitmessage
+.gitmessage

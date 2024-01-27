@@ -1,7 +1,7 @@
-(ns birthdays.birthdays
+(ns birthdays
   (:require [clojure.data.json :as json]
             [postal.core :as postal]
-            [birthdays.config :as config]
+            [config :as config]
             [clj-time.core :as time]
             [clojure.walk :as walk]
             [clojure.tools.logging :as logging]
@@ -24,25 +24,38 @@
        [:p greeting]])
     (config/get-config :footer)))
 
+(defn- choose-outgoing-mail-server [provider]
+  (cond
+    (= "gmail" provider) "smtp.gmail.com"
+    (= "zoho" provider) "smtp.zoho.eu"))
+
 (defn- send!
   [{:keys [emails name occasion]}]
   (let [sender-email (config/get-config :sender-email)
-        gmail-password (config/get-config :gmail-password)
-        greeting (greeting (keyword occasion) name)]
+        password (config/get-config :password)
+        greeting (greeting (keyword occasion) name)
+        email {:from    sender-email
+               :to      emails
+               :subject greeting
+               :body    [{:type    "text/html; charset=utf-8"
+                          :content (body greeting)}]
+               }]
     (try
       (postal/send-message
-        {:host "smtp.gmail.com"
+        {:host (choose-outgoing-mail-server (config/get-config :email-provider))
          :user sender-email
-         :pass gmail-password
+         :pass password
          :port 587
-         :tls  true}
-        {:from    sender-email
-         :to      emails
-         :cc      (when (config/get-config :cc-sender) sender-email)
-         :subject greeting
-         :body    [{:type    "text/html; charset=utf-8"
-                    :content (body greeting)}]
-         })
+         :tls  true
+         }
+        (if
+          (and
+            (config/get-config :cc)
+
+            ; handle the empty-string case because this is what `${{ secrets.CC }}` will evaluate to in GitHub Actions if a `CC` secret is not set
+            (not= "" (config/get-config :cc)))
+          (assoc email :cc (string/split (config/get-config :cc) #","))
+          email))
       (swap! n-sent inc)
       (catch Exception e (str "Email to " (string/join ", " emails) " was not sent due to exception " (.getMessage e))
                          (logging/error (str e))))))

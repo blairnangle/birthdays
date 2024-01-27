@@ -1,20 +1,23 @@
-(ns birthdays.config
+(ns config
   (:require [omniconf.core :as omni]
             [hiccup2.core :as hiccup]))
 
 (defn load-config []
   (omni/enable-functions-as-defaults)
   (omni/define
-    {:sender-email   {:description "The (Gmail) email address from which emails are sent."
+    {:email-provider {:description "The email provider."
+                      :type        :string
+                      :required    true
+                      :one-of      ["gmail" "zoho"]}
+     :sender-email   {:description "The email address from which emails are sent."
                       :type        :string
                       :required    true}
-     :gmail-password {:description "The Google App Password associated with :sender-email."
+     :password       {:description "The password for :sender-email. This is likely to be an app-specific password."
                       :type        :string
                       :required    true}
-     :cc-sender      {:description "Should the sender also be copied on the email? Can serve as a useful reminder that a server sent someone an automated email on your behalf."
-                      :type        :boolean
-                      :required    false
-                      :default     false}
+     :cc             {:description "Comma-separated (string) list of emails to cc (e.g., \"person1@mail.com,person2@mail.com\")"
+                      :type        :string
+                      :required    false}
      :footer         {:description "Comes at the end of each email."
                       :type        :string
                       :required    false
