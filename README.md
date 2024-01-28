@@ -2,7 +2,7 @@
 
 Clojure-powered automated email sender for birthdays and anniversaries.
 
-Currently only works with Gmail (as the sender email address).
+Works with Gmail or Zoho, currently.
 
 ## Cloning/forking
 
@@ -45,7 +45,7 @@ git push origin main
 
 ```shell
 git remote add public https://github.com/blairnangle/birthdays.git
-git pull public main
+git pull --rebase public main
 git push origin main
 ```
 
@@ -58,18 +58,24 @@ below.
 Secret values should find there way into the code as GitHub Actions secrets -> environment variables -> read into config
 by Omniconf.
 
+### :email-provider
+
+If you use Gmail, this value should be `gmail`. If you use Zoho Mail, this value should be `zoho`.
+
+Save this as a GitHub Actions secret named `EMAIL_PROVIDER`.
+
 ### :sender-email
 
 Save this as a GitHub Actions secret named `SENDER_EMAIL`.
 
 ### :password
 
+Save this as a GitHub Actions secret named `PASSWORD`.
+
 #### Gmail
 
 You need a Google App Password to send emails on behalf of your Gmail account. This can be
 done [here](https://myaccount.google.com/apppasswords).
-
-Save this as a GitHub Actions secret named `GMAIL_PASSWORD`.
 
 #### Zoho
 
@@ -78,6 +84,30 @@ _Application-Specific Password_ -
 see [their docs](https://www.zoho.com/mail/help/adminconsole/two-factor-authentication.html#alink7). Even if you don't
 have MFA enabled, it is still a good idea to create one of these. Otherwise, a bad actor that gets their hands on your
 password will have access to everything in your account.
+
+### :cc
+
+Emails to cc (can be omitted entirely). Save this as a GitHub Actions secret named `CC`.
+
+For one cc recipient, e.g.:
+
+```shell
+export CC=person1@mail.com
+```
+
+For multiple cc recipients, e.g.:
+
+```shell
+export CC=person1@mail.com,person2@mail.com
+```
+
+### :footer
+
+Goes at the bottom of every email. Configure in the `config` namespace.
+
+### :input-file
+
+Path to file holding birthdays and anniversaries data. Configure in the `config` namespace.
 
 ## Execution
 

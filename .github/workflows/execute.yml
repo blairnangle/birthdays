@@ -6,6 +6,7 @@ on:
 
 env:
   SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+  EMAIL_PROVIDER: ${{ secrets.EMAIL_PROVIDER }}
   PASSWORD: ${{ secrets.PASSWORD }}
   CC: ${{ secrets.CC }}
 

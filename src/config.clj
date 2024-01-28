@@ -26,7 +26,7 @@
                                             "This is an automated message. There is no option to unsubscribe. You can view the code that powered this message "
                                             [:a {:href "https://github.com/blairnangle/birthdays"} "here"]
                                             "."]))}
-     :input-file     {:description "Database of occasions to read."
+     :input-file     {:description "Path to file containing birthdays and anniversaries data."
                       :type        :string
                       :required    false
                       :default     "occasions.json"}})
