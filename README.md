@@ -45,7 +45,7 @@ git push origin main
 
 ```shell
 git remote add public https://github.com/blairnangle/birthdays.git
-git pull --rebase public main
+git pull public main
 git push origin main
 ```
 
